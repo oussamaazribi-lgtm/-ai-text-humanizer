@@ -6,7 +6,10 @@ st.set_page_config(page_title="AI Text Processor", page_icon="🧠", layout="cen
 st.title("🧠 Advanced AI Detector & Humanizer")
 st.write("Personal tool to analyze text structure and rewrite it to bypass AI detection systems.")
 
-OPENROUTER_KEY = "PNMrI4XtuirRfIIX5m0NctsU8PVilpX8mUWgKzIoIRE2kNpNxdVFRZzK"
+try:
+    OPENROUTER_KEY = st.secrets["OPENROUTER_API_KEY"]
+except:
+    OPENROUTER_KEY = ""
 
 text_to_process = st.text_area("Paste your AI-generated text here:", height=200)
 
@@ -17,8 +20,8 @@ with st.expander("⚙️ Advanced Processing Configuration"):
 if st.button("🚀 Process Text Now"):
     if not text_to_process:
         st.warning("Please enter some text first!")
-    elif OPENROUTER_KEY in ["", "ضع_مفتاح_openrouter_الخاص_بك_هنا"]:
-        st.error("Error: Please replace the placeholder with your actual OpenRouter API key inside the code.")
+    elif OPENROUTER_KEY == "":
+        st.error("Error: OPENROUTER_API_KEY is not configured in Streamlit Secrets.")
     else:
         st.info("🔍 Analyzing statistical distribution and sentence patterns...")
         
