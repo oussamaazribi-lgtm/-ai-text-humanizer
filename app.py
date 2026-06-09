@@ -50,7 +50,11 @@ if st.button("🚀 Process Text Now"):
         try:
             client = openai.OpenAI(
                 base_url="https://openrouter.ai/api/v1",
-                api_key=OPENROUTER_KEY
+                api_key=OPENROUTER_KEY,
+                default_headers={
+                    "HTTP-Referer": "https://streamlit.io",
+                    "X-Title": "Personal AI Humanizer"
+                }
             )
             
             response = client.chat.completions.create(
@@ -59,11 +63,7 @@ if st.button("🚀 Process Text Now"):
                     {"role": "system", "content": system_instructions},
                     {"role": "user", "content": text_to_process}
                 ],
-                temperature=creativity_level,
-                extra_headers={
-                    "HTTP-Referer": "https://streamlit.io", 
-                    "X-Title": "Personal AI Humanizer",
-                }
+                temperature=creativity_level
             )
             
             humanized_output = response.choices[0].message.content
