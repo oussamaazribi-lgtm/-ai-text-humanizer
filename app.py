@@ -12,7 +12,6 @@ st.markdown("""
         font-family: 'Cairo', sans-serif !important;
     }
     
-    /* تنسيق الأزرار الزرقاء الرئيسية */
     div.stButton > button:first-child {
         width: 100%;
         background-color: #1E3A8A;
@@ -30,7 +29,6 @@ st.markdown("""
         box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
     }
     
-    /* مظهر خاص لزر تشغيل الأنسنة (الأخضر) */
     div[data-testid="stVerticalBlock"] > div:nth-child(4) div.stButton > button:first-child {
         background-color: #10B981;
     }
@@ -38,7 +36,6 @@ st.markdown("""
         background-color: #059669;
     }
     
-    /* مظهر مخصص لزر النسخ السريع (الرمادي الاحترافي) */
     .copy-btn {
         width: 100%;
         background-color: #4B5563;
@@ -68,18 +65,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# الهيدر الرئيسي للتطبيق
 st.markdown("<h2 style='text-align: center; color: #1E3A8A; font-weight: 700;'>✒️ Premium AI Text Auditor & Humanizer</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #6B7280; font-size: 14px;'>Advanced content analysis matrix & enterprise-grade text de-patterning</p>", unsafe_allow_html=True)
 st.divider()
 
-# جلب مفتاح الأمان
 try:
     OPENROUTER_KEY = st.secrets["OPENROUTER_API_KEY"]
 except:
     OPENROUTER_KEY = ""
 
-# --- إدارة الذاكرة المؤقتة (Session State) لمنع تجمد التطبيق تماماً وضمان ثبات البيانات ---
 if "input_text" not in st.session_state:
     st.session_state.input_text = ""
 if "audit_results" not in st.session_state:
@@ -89,7 +83,6 @@ if "ai_score" not in st.session_state:
 if "humanized_output" not in st.session_state:
     st.session_state.humanized_output = None
 
-# صندوق إدخال المقال
 text_to_process = st.text_area(
     "📝 Paste your professional content here:", 
     value=st.session_state.input_text, 
@@ -98,7 +91,6 @@ text_to_process = st.text_area(
 )
 st.session_state.input_text = text_to_process
 
-# زر تشغيل الفحص والتحليل
 if st.button("🔍 Run Multi-Dimensional Audit"):
     if not text_to_process:
         st.warning("Please enter some text first!")
@@ -115,7 +107,6 @@ if st.button("🔍 Run Multi-Dimensional Audit"):
                 base_score += min(trigger_count * 14, 60)
             st.session_state.ai_score = min(base_score, 98)
 
-            # طلب التقرير من سيرفر DeepSeek
             audit_prompt = (
                 "You are an elite linguistic auditor and chief copyeditor. Analyze the provided Arabic text "
                 "critically and output a professional, clear audit report using Markdown.\n\n"
@@ -151,7 +142,6 @@ if st.button("🔍 Run Multi-Dimensional Audit"):
             except Exception as e:
                 st.error(f"API System Error: {str(e)}")
 
-# --- تنظيم المخرجات عبر التبويبات الاحترافية الثابتة ضد التجميد ---
 if st.session_state.audit_results:
     st.write("")
     tab1, tab2 = st.tabs(["📊 Linguistic Audit Report", "🛠️ Advanced Humanizer Engine"])
@@ -185,17 +175,21 @@ if st.session_state.audit_results:
         
         if st.button("🚀 Execute Optimization & Re-write"):
             with st.spinner("⚙️ Restructuring linguistic grid and injecting human variance..."):
-                # أمر برمي صارم لمنع الـ Markdown نهائياً
+                
+                # --- التطوير هنا: دمج التقرير والعيوب داخل الـ Prompt الخاص بالأنسنة ---
                 humanize_prompt = (
-                    "You are an award-winning creative writer and editor. Rewrite the provided Arabic text to completely clear "
-                    "all predictability scores and AI fingerprints while maximizing sentence structural variance.\n\n"
+                    "You are an award-winning creative writer and chief editor. Your mission is to rewrite the user text to "
+                    "completely eliminate all AI fingerprints, maximize sentence structural variance, AND strictly apply the fixes "
+                    "for the flaws identified in the provided Audit Report.\n\n"
+                    f"STRICT AUDIT REPORT TO APPLY:\n{st.session_state.audit_results}\n\n"
                     "STRICT FORMATTING RULE:\n"
                     "Do NOT use any Markdown formatting. Do NOT use asterisks (** or *) for bolding. Do NOT create titles or headings.\n"
                     "Output ONLY regular paragraphs of clean, raw text that can be copied directly without formatting symbols.\n\n"
                     "Execution Metrics:\n"
-                    "1. Eliminate predictable transition matrix patterns completely.\n"
-                    f"2. Apply this specific stylistic persona: {bypass_mode}.\n"
-                    "3. Return ONLY the final beautifully crafted Arabic text without metadata or commentary."
+                    "1. Address every single flaw mentioned in the Audit Report above (e.g., tone inconsistencies, repetitive words, vocabulary limitations).\n"
+                    "2. Eliminate predictable transition matrix patterns completely.\n"
+                    f"3. Apply this specific stylistic persona: {bypass_mode}.\n"
+                    "4. Return ONLY the final beautifully crafted Arabic text without metadata or commentary."
                 )
                 
                 try:
@@ -227,10 +221,8 @@ if st.session_state.audit_results:
             st.success("✨ Optimization Sequence Complete!")
             st.metric(label="Residual AI Probability", value="1% - 4%", delta=f"-{st.session_state.ai_score - 3}%")
             
-            # عرض النص الصافي
             st.text_area("📋 Optimized Humanized Output (Clean Text):", value=st.session_state.humanized_output, height=250, key="clean_output_text")
             
-            # --- زر النسخ السريع المطور عبر الـ JavaScript ليناسب الهواتف الذكية ---
             escaped_text = st.session_state.humanized_output.replace('"', '\\"').replace('\n', '\\n')
             js_code = f"""
             <button class="copy-btn" onclick="navigator.clipboard.writeText('{escaped_text}').then(() => {{ this.innerText = '📋 Copied Successfully! تم النسخ بنجاح'; setTimeout(() => this.innerText = '📋 Copy to Clipboard (نسخ النص الجاهز)', 2000); }})">
